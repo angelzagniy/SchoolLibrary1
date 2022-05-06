@@ -87,21 +87,15 @@ namespace SchoolLibrary
                         bookService.AddAuthor();
                         break;
                     case 2:
-                        Console.WriteLine("Enter title of book");
-                        var title = Console.ReadLine();
-                        Console.WriteLine("Enter authorId of the book");
-                        var authorId = int.Parse(Console.ReadLine() ?? string.Empty);
-                        bookService.AddBook(title, new[] {authorId, 2, 3});
-                        Console.WriteLine("Enter number of the books");
-                        var number = int.Parse(Console.ReadLine() ?? string.Empty);
+                        bookService.AddBook();
                         break;
                     case 3:
                         Console.WriteLine("Enter bookId for searching:");
                         int bookId = int.Parse(Console.ReadLine());
                         bookService.FindBook(bookId);
                         Console.WriteLine("Enter new number of books:");
-                        int n =
-                            bookService.ChangeNumberOfBooks();
+                        int n = int.Parse(Console.ReadLine());
+                            bookService.ChangeNumberOfBooks(bookId, n);
                         break;
                     case 4:
                         bookService.ShowAllPeople();
@@ -113,7 +107,9 @@ namespace SchoolLibrary
                         bookService.FindPeople();
                         break;
                     case 7:
-
+                        Console.WriteLine("Enter bookId for searching:");
+                        int bId = int.Parse(Console.ReadLine());
+                        bookService.FindBook(bId);
                         break;
                     case 8:
                         bookService.PeoleTakeBookAway();

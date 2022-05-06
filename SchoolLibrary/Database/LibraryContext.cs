@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace SchoolLibrary.Database
-{ 
+{
     public class LibraryContext : DbContext
     {
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<BookAuthor> BookAuthors { get; set; }
-        
+
         private readonly string _fileName;
 
         public LibraryContext(string fileName)
@@ -24,20 +23,14 @@ namespace SchoolLibrary.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
-            modelBuilder.Entity<Book>().HasKey(s => s.BookId);
-            modelBuilder.Entity<Author>().HasKey(s => s.AuthorId);
-            modelBuilder.Entity<BookAuthor>().HasKey(ba => new {ba.BookId, ba.AuthorId});
-
-            modelBuilder.Entity<BookAuthor>()
-                .HasOne<Book>()
-                .WithMany()
-                .HasForeignKey(ba => ba.BookId);
-            
-            modelBuilder.Entity<BookAuthor>()
-                .HasOne<Author>()
-                .WithMany()
-                .HasForeignKey(ba => ba.AuthorId);
+            modelBuilder.Entity<Book>(entity =>
+            {
+                entity.HasKey(s => s.BookId);
+                entity
+                    .HasOne(s => s.Author)
+                    .WithMany(s => s.Books)
+                    .HasForeignKey(s => s.AuthorId);
+            });
 
             modelBuilder.Entity<User>().HasKey(s => s.Id);
         }

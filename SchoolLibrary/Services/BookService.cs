@@ -20,20 +20,17 @@ public class BookService
         Console.WriteLine("Author id is " + a.Entity.AuthorId);
     }
 
-    public void AddBook(string title, IEnumerable<int> authors)//додати нову книжку
+    public void AddBook()//додати нову книжку
     {
-        var book = new Book
-        {
-            Title = title
-        };
-        _libraryContext.Books.Add(book);
+        Console.WriteLine("Enter title of book");
+        var title = Console.ReadLine();
+        Console.WriteLine("Enter authorId of the book");
+        var authorId = int.Parse(Console.ReadLine() ?? string.Empty);
+        Console.WriteLine("Enter number of the books");
+        var number = int.Parse(Console.ReadLine() ?? string.Empty);
+        var a = _libraryContext.Books.Add(new Book {Title = title, AuthorId = authorId, Number = number});
         _libraryContext.SaveChanges();
-        
-        foreach (var id in authors)
-        {
-            _libraryContext.BookAuthors.Add(new BookAuthor {BookId = book.BookId, AuthorId = id});
-        }
-        _libraryContext.SaveChanges();
+        Console.WriteLine("Book id is " + a.Entity.BookId);
     }
 
     public void ShowAllBooks()//показати всі книжки
@@ -51,9 +48,11 @@ public class BookService
         }
     }
 
-    public void ChangeNumberOfBooks(int number)//змінити кількість примірників
+    public void ChangeNumberOfBooks(int bookId, int number)//змінити кількість примірників
     {
-        
+        var book = FindBook(bookId);
+        book.Number = number;
+        Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number);
     }
 
     public void ShowAllPeople()//показати всіх користувачів
@@ -64,7 +63,7 @@ public class BookService
     {
     }
 
-    public void FindBook(int bookId)//знайти книжку по ід
+    public Book FindBook(int bookId)//знайти книжку по ід
     {
         var id = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
         if(id == null)
@@ -83,6 +82,7 @@ public class BookService
                 Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number + "---" + book.Name);
             }
         }
+        return id;
     }
 
     public void PeoleTakeBookAway()//користувач забирає книжку додому
