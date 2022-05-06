@@ -15,7 +15,7 @@ namespace SchoolLibrary
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
             dbContext.SaveChanges();
-           
+
             User user = null;
             while (user == null)
             {
@@ -91,13 +91,17 @@ namespace SchoolLibrary
                         var title = Console.ReadLine();
                         Console.WriteLine("Enter authorId of the book");
                         var authorId = int.Parse(Console.ReadLine() ?? string.Empty);
-                        bookService.AddBook(title, new []{authorId, 2, 3});
+                        bookService.AddBook(title, new[] {authorId, 2, 3});
                         Console.WriteLine("Enter number of the books");
                         var number = int.Parse(Console.ReadLine() ?? string.Empty);
-                        //Console.WriteLine("Book id is " + entry.Entity.BookId);
                         break;
                     case 3:
-                        bookService.ChangeNumberOfBooks();
+                        Console.WriteLine("Enter bookId for searching:");
+                        int bookId = int.Parse(Console.ReadLine());
+                        bookService.FindBook(bookId);
+                        Console.WriteLine("Enter new number of books:");
+                        int n =
+                            bookService.ChangeNumberOfBooks();
                         break;
                     case 4:
                         bookService.ShowAllPeople();
@@ -109,9 +113,7 @@ namespace SchoolLibrary
                         bookService.FindPeople();
                         break;
                     case 7:
-                        Console.WriteLine("Enter bookId for searching:");
-                        int bookId = int.Parse(Console.ReadLine());
-                        bookService.FindBook(bookId);
+
                         break;
                     case 8:
                         bookService.PeoleTakeBookAway();

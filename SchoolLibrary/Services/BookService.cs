@@ -51,8 +51,9 @@ public class BookService
         }
     }
 
-    public void ChangeNumberOfBooks()//змінити кількість примірників
+    public void ChangeNumberOfBooks(int number)//змінити кількість примірників
     {
+        
     }
 
     public void ShowAllPeople()//показати всіх користувачів
@@ -68,6 +69,20 @@ public class BookService
         var id = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
         if(id == null)
             Console.WriteLine("Book was not found!");
+        else
+        {
+            var books =
+                from b in _libraryContext.Books
+                join ab in _libraryContext.Authors on b.AuthorId equals ab.AuthorId
+                select new {b.BookId, b.Title, b.Number, ab.Name};
+
+            var booksList = books.ToList();
+
+            foreach (var book in booksList)
+            {
+                Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number + "---" + book.Name);
+            }
+        }
     }
 
     public void PeoleTakeBookAway()//користувач забирає книжку додому
