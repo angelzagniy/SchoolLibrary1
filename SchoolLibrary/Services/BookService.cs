@@ -11,6 +11,15 @@ public class BookService
         _libraryContext = libraryContext;
     }
 
+    public void AddPeople()//додати користувача
+    {
+        Console.WriteLine("Enter name of user");
+        var name = (Console.ReadLine() ?? string.Empty);
+        var a = _libraryContext.Users.Add(new User {UserName = name});
+        _libraryContext.SaveChanges();
+        Console.WriteLine("User id is " + a.Entity.Id);
+    }
+    
     public void AddAuthor()//додати нового автора
     {
         Console.WriteLine("Enter name of author");

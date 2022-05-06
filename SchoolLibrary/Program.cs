@@ -9,27 +9,27 @@ namespace SchoolLibrary
         {
             string dbName = "LibraryDataBase.db";
             using var dbContext = new LibraryContext(dbName);
-            var userService = new UserService(dbContext);
+            var adminService = new AdminService(dbContext);
             var bookService = new BookService(dbContext);
 
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
             dbContext.SaveChanges();
 
-            User user = null;
-            while (user == null)
+            Admin admin = null;
+            while (admin == null)
             {
                 Console.WriteLine("Do you want login or sign up?\n(put 1 to login, 2 - sign up)");
                 int userInput = int.Parse(Console.ReadLine());
                 switch (userInput)
                 {
                     case 1:
-                        while (user == null)
+                        while (admin == null)
                         {
                             Console.WriteLine("Enter your username:");
-                            string userName = Console.ReadLine();
-                            user = userService.Login(userName);
-                            if (user == null)
+                            string adminName = Console.ReadLine();
+                            admin = adminService.Login(adminName);
+                            if (admin == null)
                             {
                                 Console.WriteLine("Username not found. Please try again.");
                             }
@@ -38,18 +38,18 @@ namespace SchoolLibrary
                         Console.WriteLine("You successfully logged in!");
                         break;
                     case 2:
-                        while (user == null)
+                        while (admin == null)
                         {
                             Console.WriteLine("Enter your username:");
-                            string userName = Console.ReadLine();
+                            string adminName = Console.ReadLine();
                             try
                             {
-                                user = userService.SignUp(userName);
+                                admin = adminService.SignUp(adminName);
                             }
                             catch (Exception e)
                             {
                                 Console.WriteLine(e.Message);
-                                user = null;
+                                admin = null;
                             }
                         }
 
@@ -65,17 +65,18 @@ namespace SchoolLibrary
             {
                 Console.WriteLine("Please, chose a command" +
                                   "\n0 - quit" +
-                                  "\n1 - add new author" +
-                                  "\n2 - add new book" +
-                                  "\n3 - change number of books" +
-                                  "\n4 - show all people" +
-                                  "\n5 - show all books" +
-                                  "\n6 - find username" +
-                                  "\n7 - find book by id" +
-                                  "\n8 - take book" + //people take book away
-                                  "\n9 - give book away" + //people give book away
-                                  "\n10 - delete book" +
-                                  "\n11 - delete user");
+                                  "\n1 - add user"+
+                                  "\n2 - add new author" +
+                                  "\n3 - add new book" +
+                                  "\n4 - change number of books" +
+                                  "\n5 - show all people" +
+                                  "\n6 - show all books" +
+                                  "\n7 - find username" +
+                                  "\n8 - find book by id" +
+                                  "\n9 - take book" + //people take book away
+                                  "\n10 - give book away" + //people give book away
+                                  "\n11 - delete book" +
+                                  "\n12 - delete user");
 
                 var choice = int.Parse(Console.ReadLine() ?? string.Empty);
 
@@ -84,43 +85,46 @@ namespace SchoolLibrary
                     case 0:
                         return;
                     case 1:
-                        bookService.AddAuthor();
+                        bookService.AddPeople();
                         break;
                     case 2:
-                        bookService.AddBook();
+                        bookService.AddAuthor();
                         break;
                     case 3:
+                        bookService.AddBook();
+                        break;
+                    case 4:
                         Console.WriteLine("Enter bookId for searching:");
                         int bookId = int.Parse(Console.ReadLine());
                         bookService.FindBook(bookId);
                         Console.WriteLine("Enter new number of books:");
                         int n = int.Parse(Console.ReadLine());
-                            bookService.ChangeNumberOfBooks(bookId, n);
-                        break;
-                    case 4:
-                        bookService.ShowAllPeople();
+                        bookService.ChangeNumberOfBooks(bookId, n);
                         break;
                     case 5:
-                        bookService.ShowAllBooks();
+                        bookService.ShowAllPeople();
                         break;
                     case 6:
-                        bookService.FindPeople();
+                        bookService.ShowAllBooks();
                         break;
                     case 7:
+                        bookService.FindPeople();
+                        break;
+                    case 8:
                         Console.WriteLine("Enter bookId for searching:");
                         int bId = int.Parse(Console.ReadLine());
                         bookService.FindBook(bId);
                         break;
-                    case 8:
+                    case 9:
                         bookService.PeoleTakeBookAway();
                         break;
-                    case 9:
+                    case 10:
                         bookService.TakeBookBack();
                         break;
-                    case 10:
+                    case 11:
                         bookService.DeleteBook();
                         break;
-                    case 11:
+                    case 12:
                         bookService.DeletePeople();
                         break;
                     default:
