@@ -2,7 +2,13 @@ using SchoolLibrary.Database;
 
 namespace SchoolLibrary.Services;
 
-public class AdminService
+public interface IAdminService
+{
+    Admin Login(string adminName);
+    Admin SignUp(string adminName);
+}
+
+public class AdminService : IAdminService
 {
     private readonly LibraryContext _libraryContext;
 
