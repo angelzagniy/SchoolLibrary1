@@ -108,7 +108,9 @@ namespace SchoolLibrary
                         bookService.ShowAllBooks();
                         break;
                     case 7:
-                        bookService.FindPeople();
+                        Console.WriteLine("Enter userName:");
+                        string userName = Console.ReadLine().ToLower();
+                        bookService.FindUser(userName);
                         break;
                     case 8:
                         Console.WriteLine("Enter bookId for searching:");
@@ -116,16 +118,26 @@ namespace SchoolLibrary
                         bookService.FindBook(bId);
                         break;
                     case 9:
-                        bookService.PeoleTakeBookAway();
+                        Console.WriteLine("Enter userName:");
+                        string uName = Console.ReadLine().ToLower();
+                        Console.WriteLine("Enter bookId:");
+                        int bookId1 = int.Parse(Console.ReadLine());
+                        bookService.PeoleTakeBookAway(uName, bookId1);
                         break;
                     case 10:
-                        bookService.TakeBookBack();
+                        Console.WriteLine("Enter userName:");
+                        string uN = Console.ReadLine().ToLower();
+                        Console.WriteLine("Enter bookId:");
+                        int bookId2 = int.Parse(Console.ReadLine());
+                        bookService.TakeBookBack(uN, bookId2);
                         break;
                     case 11:
                         bookService.DeleteBook();
                         break;
                     case 12:
-                        bookService.DeletePeople();
+                        Console.WriteLine("Enter userName:");
+                        string u = Console.ReadLine().ToLower();
+                        bookService.DeletePeople(u);
                         break;
                     default:
                         Console.WriteLine("Wrong number!");

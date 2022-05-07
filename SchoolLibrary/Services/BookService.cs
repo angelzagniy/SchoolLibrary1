@@ -11,7 +11,7 @@ public class BookService
         _libraryContext = libraryContext;
     }
 
-    public void AddPeople()//додати користувача
+    public void AddPeople() //додати користувача
     {
         Console.WriteLine("Enter name of user");
         var name = (Console.ReadLine() ?? string.Empty);
@@ -19,8 +19,8 @@ public class BookService
         _libraryContext.SaveChanges();
         Console.WriteLine("User id is " + a.Entity.Id);
     }
-    
-    public void AddAuthor()//додати нового автора
+
+    public void AddAuthor() //додати нового автора
     {
         Console.WriteLine("Enter name of author");
         var name = (Console.ReadLine() ?? string.Empty);
@@ -29,7 +29,7 @@ public class BookService
         Console.WriteLine("Author id is " + a.Entity.AuthorId);
     }
 
-    public void AddBook()//додати нову книжку
+    public void AddBook() //додати нову книжку
     {
         Console.WriteLine("Enter title of book");
         var title = Console.ReadLine();
@@ -37,12 +37,13 @@ public class BookService
         var authorId = int.Parse(Console.ReadLine() ?? string.Empty);
         Console.WriteLine("Enter number of the books");
         var number = int.Parse(Console.ReadLine() ?? string.Empty);
-        var a = _libraryContext.Books.Add(new Book {Title = title, AuthorId = authorId, Number = number});
+        var a = _libraryContext.Books.Add(new Book
+            {Title = title, AuthorId = authorId, Number = number, FirstNumberOfBooks = number});
         _libraryContext.SaveChanges();
         Console.WriteLine("Book id is " + a.Entity.BookId);
     }
 
-    public void ShowAllBooks()//показати всі книжки
+    public void ShowAllBooks() //показати всі книжки
     {
         var books =
             from b in _libraryContext.Books
@@ -57,25 +58,35 @@ public class BookService
         }
     }
 
-    public void ChangeNumberOfBooks(int bookId, int number)//змінити кількість примірників
+    public void ChangeNumberOfBooks(int bookId, int number) //змінити кількість примірників
     {
         var book = FindBook(bookId);
         book.Number = number;
         Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number);
     }
 
-    public void ShowAllPeople()//показати всіх користувачів
+    public void ShowAllPeople() //показати всіх користувачів
     {
+        var userList = _libraryContext.Users.ToList();
+        foreach (var user in userList)
+        {
+            Console.WriteLine(user.Id + " " + user.UserName);
+        }
     }
 
-    public void FindPeople()//знайти користувача по імені
+    public void FindUser(string userName) //знайти користувача по імені
     {
+        var user = _libraryContext.Users.Where(s => s.UserName.ToLower().Contains(userName)).ToList();
+        foreach (var u in user)
+        {
+            Console.WriteLine(u.Id + " " + u.UserName);
+        }
     }
 
-    public Book FindBook(int bookId)//знайти книжку по ід
+    public Book FindBook(int bookId) //знайти книжку по ід
     {
         var id = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
-        if(id == null)
+        if (id == null)
             Console.WriteLine("Book was not found!");
         else
         {
@@ -91,23 +102,65 @@ public class BookService
                 Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number + "---" + book.Name);
             }
         }
+
         return id;
     }
 
-    public void PeoleTakeBookAway()//користувач забирає книжку додому
+    public void PeoleTakeBookAway(string userName, int bookId) //користувач забирає книжку додому
     {
+        var user = _libraryContext.Users.FirstOrDefault(s => s.UserName == userName);
+        if (user != null)
+        {
+            var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
+                 book.Number--;
+            var a = _libraryContext.UserBooks.Add(new UserBook {Id = user.Id, BookId = bookId, UserName = userName});
+        }
+        else
+        {
+            Console.WriteLine("User was not found!");
+            return;
+        }
+        _libraryContext.SaveChanges();
     }
 
-    public void TakeBookBack()//користувач повертає книжку
+    public void TakeBookBack(string userName, int bookId) //користувач повертає книжку !!!
     {
+        var user = _libraryContext.Users.FirstOrDefault(s => s.UserName == userName);
+        if (user != null)
+        {
+            var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
+            book.Number++;
+            var a = _libraryContext.UserBooks.Remove(new UserBook {Id = user.Id, BookId = bookId, UserName = userName});
+        }
+        else
+        {
+            Console.WriteLine("User was not found!");
+            return;
+        }
+        _libraryContext.SaveChanges();
     }
 
-    public void DeleteBook()//видалити книжку, якщо жоден примірник не взято
+    public void DeleteBook() //видалити книжку, якщо жоден примірник не взято !!!
     {
+        var book = new Book();
+        if (book.Number == book.FirstNumberOfBooks)
+            _libraryContext.Books.Remove(book);
+        _libraryContext.SaveChanges();
     }
 
-    public void DeletePeople()//видалити користувача та повернути всі примірники
+    public void DeletePeople(string userName) //видалити користувача та повернути всі примірники !!!
     {
-        
+        var user = _libraryContext.UserBooks.FirstOrDefault(s => s.UserName == userName);
+        if (user != null)
+        {
+            var book = _libraryContext.UserBooks.FirstOrDefault(s => s.BookId == user.BookId);
+            var a = _libraryContext.UserBooks.Remove(new UserBook {Id = user.Id, BookId = book.BookId, UserName = userName});
+        }
+        else
+        {
+            Console.WriteLine("User was not found!");
+            return;
+        }
+        _libraryContext.SaveChanges();
     }
 }

@@ -8,7 +8,8 @@ namespace SchoolLibrary.Database
         public DbSet<Book> Books { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }
-        
+        public DbSet<UserBook> UserBooks { get; set; }
+
         private readonly string _fileName;
 
         public LibraryContext(string fileName)
@@ -33,15 +34,16 @@ namespace SchoolLibrary.Database
                     .HasForeignKey(s => s.AuthorId);
             });
 
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<UserBook>(entity =>
             {
                 entity.HasKey(s => s.Id);
                 entity
-                    .HasOne(s => s.Book)
-                    .WithMany(s => s.People)
+                    .HasOne(s => s.User)
+                    .WithMany(s => s.Books)
                     .HasForeignKey(s => s.BookId);
             });
-            
+
+            modelBuilder.Entity<User>().HasKey((s => s.Id));
             modelBuilder.Entity<Admin>().HasKey(s => s.Id);
             modelBuilder.Entity<Author>().HasKey(s => s.AuthorId);
         }
