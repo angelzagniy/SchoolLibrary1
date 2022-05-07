@@ -15,6 +15,9 @@ public class BookService
     {
         Console.WriteLine("Enter name of user");
         var name = (Console.ReadLine() ?? string.Empty);
+        var add = _libraryContext.Users.FirstOrDefault(s => s.UserName == name);
+        if (add != null)
+            throw new Exception("User already exists!");
         var a = _libraryContext.Users.Add(new User {UserName = name});
         _libraryContext.SaveChanges();
         Console.WriteLine("User id is " + a.Entity.Id);
@@ -24,6 +27,9 @@ public class BookService
     {
         Console.WriteLine("Enter name of author");
         var name = (Console.ReadLine() ?? string.Empty);
+        var add = _libraryContext.Authors.FirstOrDefault(s => s.Name== name);
+        if (add != null)
+            throw new Exception("Author already exists!");
         var a = _libraryContext.Authors.Add(new Author {Name = name});
         _libraryContext.SaveChanges();
         Console.WriteLine("Author id is " + a.Entity.AuthorId);
@@ -37,6 +43,9 @@ public class BookService
         var authorId = int.Parse(Console.ReadLine() ?? string.Empty);
         Console.WriteLine("Enter number of the books");
         var number = int.Parse(Console.ReadLine() ?? string.Empty);
+        var add = _libraryContext.Books.FirstOrDefault(s => s.Title == title);
+        if (add != null)
+            throw new Exception("Book already exists!");
         var a = _libraryContext.Books.Add(new Book
             {Title = title, AuthorId = authorId, Number = number, FirstNumberOfBooks = number});
         _libraryContext.SaveChanges();
@@ -106,7 +115,7 @@ public class BookService
         return id;
     }
 
-    public void PeoleTakeBookAway(string userName, int bookId) //користувач забирає книжку додому
+    public void UserTakeBookAway(string userName, int bookId) //користувач забирає книжку додому
     {
         var user = _libraryContext.Users.FirstOrDefault(s => s.UserName == userName);
         if (user != null)
@@ -114,13 +123,12 @@ public class BookService
             var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
                  book.Number--;
             var a = _libraryContext.UserBooks.Add(new UserBook {Id = user.Id, BookId = bookId, UserName = userName});
+            _libraryContext.SaveChanges();
         }
         else
         {
-            Console.WriteLine("User was not found!");
-            return;
+            throw new Exception("User was not found!");
         }
-        _libraryContext.SaveChanges();
     }
 
     public void TakeBookBack(string userName, int bookId) //користувач повертає книжку !!!
@@ -130,37 +138,40 @@ public class BookService
         {
             var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
             book.Number++;
-            var a = _libraryContext.UserBooks.Remove(new UserBook {Id = user.Id, BookId = bookId, UserName = userName});
+            var b = new UserBook {Id = user.Id, BookId = book.BookId, UserName = user.UserName};
+            _libraryContext.UserBooks.Remove(b);
+            _libraryContext.SaveChanges();
         }
         else
         {
-            Console.WriteLine("User was not found!");
-            return;
+            throw new Exception("User was not found!");
         }
-        _libraryContext.SaveChanges();
     }
 
-    public void DeleteBook() //видалити книжку, якщо жоден примірник не взято !!!
+    public void DeleteBook(int bookId) //видалити книжку, якщо жоден примірник не взято !!!
     {
-        var book = new Book();
+        var book = new Book{BookId = bookId};
         if (book.Number == book.FirstNumberOfBooks)
             _libraryContext.Books.Remove(book);
         _libraryContext.SaveChanges();
     }
 
-    public void DeletePeople(string userName) //видалити користувача та повернути всі примірники !!!
+    public void DeleteUser(string userName) //видалити користувача та повернути всі примірники !!!
     {
         var user = _libraryContext.UserBooks.FirstOrDefault(s => s.UserName == userName);
         if (user != null)
         {
-            var book = _libraryContext.UserBooks.FirstOrDefault(s => s.BookId == user.BookId);
-            var a = _libraryContext.UserBooks.Remove(new UserBook {Id = user.Id, BookId = book.BookId, UserName = userName});
+            var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == user.BookId);
+            if (book != null)
+            {
+                var b = new UserBook {Id = user.Id, BookId = book.BookId, UserName = user.UserName};
+                _libraryContext.UserBooks.Remove(b);
+            }
+            _libraryContext.SaveChanges();
         }
         else
         {
-            Console.WriteLine("User was not found!");
-            return;
+            throw new Exception("User was not found!");
         }
-        _libraryContext.SaveChanges();
     }
 }

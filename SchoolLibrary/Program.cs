@@ -122,7 +122,7 @@ namespace SchoolLibrary
                         string uName = Console.ReadLine().ToLower();
                         Console.WriteLine("Enter bookId:");
                         int bookId1 = int.Parse(Console.ReadLine());
-                        bookService.PeoleTakeBookAway(uName, bookId1);
+                        bookService.UserTakeBookAway(uName, bookId1);
                         break;
                     case 10:
                         Console.WriteLine("Enter userName:");
@@ -132,12 +132,14 @@ namespace SchoolLibrary
                         bookService.TakeBookBack(uN, bookId2);
                         break;
                     case 11:
-                        bookService.DeleteBook();
+                        Console.WriteLine("Enter bookId for searching:");
+                        int book = int.Parse(Console.ReadLine());
+                        bookService.DeleteBook(book);
                         break;
                     case 12:
                         Console.WriteLine("Enter userName:");
                         string u = Console.ReadLine().ToLower();
-                        bookService.DeletePeople(u);
+                        bookService.DeleteUser(u);
                         break;
                     default:
                         Console.WriteLine("Wrong number!");
