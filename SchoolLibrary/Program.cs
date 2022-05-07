@@ -85,7 +85,7 @@ namespace SchoolLibrary
                     case 0:
                         return;
                     case 1:
-                        bookService.AddPeople();
+                        bookService.AddUser();
                         break;
                     case 2:
                         bookService.AddAuthor();
@@ -102,7 +102,7 @@ namespace SchoolLibrary
                         bookService.ChangeNumberOfBooks(bookId, n);
                         break;
                     case 5:
-                        bookService.ShowAllPeople();
+                        bookService.ShowAllUsers();
                         break;
                     case 6:
                         bookService.ShowAllBooks();
