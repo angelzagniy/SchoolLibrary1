@@ -175,6 +175,8 @@ public class Controller
                     Console.WriteLine("Wrong number!");
                     break;
             }
+
+            Console.WriteLine("Enter next command (22 - show all commands)");
         }
     }
 }

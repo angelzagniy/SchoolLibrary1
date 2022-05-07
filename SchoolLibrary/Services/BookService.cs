@@ -19,7 +19,7 @@ public interface IBookService
 
     Book? FindBook(int bookId); //знайти книжку по ід
 
-    void DeleteBook(int bookId); //видалити книжку, якщо жоден примірник не взято !!!
+    void DeleteBook(int bookId); //видалити книжку, якщо жоден примірник не взято
 }
 
 public class BookService : IBookService
@@ -31,7 +31,11 @@ public class BookService : IBookService
         _libraryContext = libraryContext;
     }
 
-    public void AddAuthor(string name) //додати нового автора
+    /// <summary>
+    /// додати нового автора
+    /// </summary>
+    /// <param name="name"></param>
+    public void AddAuthor(string name) 
     {
         var add = _libraryContext.Authors.FirstOrDefault(s => s.Name == name);
         if (add != null)
@@ -40,9 +44,16 @@ public class BookService : IBookService
         }
         var a = _libraryContext.Authors.Add(new Author {Name = name});
         _libraryContext.SaveChanges();
+        Console.WriteLine("Author id is " + a.Entity.AuthorId);
     }
 
-    public void AddBook(string title, int authorId, int number) //додати нову книжку
+    /// <summary>
+    /// додати нову книжку
+    /// </summary>
+    /// <param name="title">назва книжки</param>
+    /// <param name="authorId"></param>
+    /// <param name="number">кількість книжок</param>
+    public void AddBook(string title, int authorId, int number) 
     {
         var add = _libraryContext.Books.FirstOrDefault(s => s.Title == title);
         if (add != null)
@@ -50,8 +61,9 @@ public class BookService : IBookService
         var a = _libraryContext.Books.Add(new Book
             {Title = title, AuthorId = authorId, Number = number, FirstNumberOfBooks = number});
         _libraryContext.SaveChanges();
+        Console.WriteLine("Book id is " + a.Entity.BookId);
     }
-
+    
     public void ShowAllBooks() //показати всі книжки
     {
         var books =
@@ -78,11 +90,16 @@ public class BookService : IBookService
         if (book != null)
         {
             book.Number = number;
+            book.FirstNumberOfBooks = number;
             Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number);
         }
     }
 
-    public Book? FindBook(int bookId) //знайти книжку по ід
+    /// <summary>
+    /// знайти книжку по ід
+    /// </summary>
+    /// <param name="bookId"></param>
+    public Book? FindBook(int bookId) 
     {
         var id = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
         if (id == null)
@@ -101,7 +118,11 @@ public class BookService : IBookService
         return id;
     }
     
-    public void DeleteBook(int bookId) //видалити книжку, якщо жоден примірник не взято
+    /// <summary>
+    /// видалити книжку, якщо жоден примірник не взято
+    /// </summary>
+    /// <param name="bookId"></param>
+    public void DeleteBook(int bookId) 
     {
         var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
         if (book == null || book.Number != book.FirstNumberOfBooks) return;
