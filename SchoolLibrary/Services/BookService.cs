@@ -15,9 +15,9 @@ public interface IBookService
     /// </summary>
     /// <param name="bookId"></param>
     /// <param name="number">Нова кількість примірників</param>
-    void ChangeNumberOfBooks(int bookId, int number);
+    Book ChangeNumberOfBooks(int bookId, int number);
 
-    Book? FindBook(int bookId); //знайти книжку по ід
+    Book FindBook(int bookId); //знайти книжку по ід
 
     void DeleteBook(int bookId); //видалити книжку, якщо жоден примірник не взято
 }
@@ -84,37 +84,23 @@ public class BookService : IBookService
     /// </summary>
     /// <param name="bookId"></param>
     /// <param name="number">Нова кількість примірників</param>
-    public void ChangeNumberOfBooks(int bookId, int number)
+    public Book ChangeNumberOfBooks(int bookId, int number)
     {
         var book = FindBook(bookId);
-        if (book != null)
-        {
-            book.Number = number;
-            book.FirstNumberOfBooks = number;
-            Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number);
-        }
+        book.Number = number;
+        _libraryContext.SaveChanges();
+        return book;
     }
 
     /// <summary>
     /// знайти книжку по ід
     /// </summary>
     /// <param name="bookId"></param>
-    public Book? FindBook(int bookId) 
+    public Book FindBook(int bookId) 
     {
         var id = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
         if (id == null)
             throw new Exception("Book was not found!");
-        var books =
-            from b in _libraryContext.Books
-            join ab in _libraryContext.Authors on b.AuthorId equals ab.AuthorId
-            select new {b.BookId, b.Title, b.Number, ab.Name};
-
-        var booksList = books.ToList();
-
-        foreach (var book in booksList)
-        {
-            Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number + "---" + book.Name);
-        }
         return id;
     }
     

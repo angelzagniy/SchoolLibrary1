@@ -16,7 +16,7 @@ namespace SchoolLibrary
             var controller = new Controller(userService, bookService, adminService);
 
             //delete DataBase
-            //dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
             
             controller.RunMainLoop();

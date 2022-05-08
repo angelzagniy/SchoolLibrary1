@@ -116,7 +116,8 @@ public class Controller
                     Console.WriteLine("Enter new number of books:");
                     var n = int.Parse(Console.ReadLine());
 
-                    _bookService.ChangeNumberOfBooks(bookId, n);
+                    var boo = _bookService.ChangeNumberOfBooks(bookId, n);
+                    Console.WriteLine(boo.BookId + " " + boo.Title + " " + boo.Number);
                     break;
                 case 5:
                     List<User> uList = _userService.ShowAllUsers();
@@ -145,7 +146,8 @@ public class Controller
                 case 8:
                     Console.WriteLine("Enter bookId for searching:");
                     var bId = int.Parse(Console.ReadLine());
-                    _bookService.FindBook(bId);
+                    var d = _bookService.FindBook(bId);
+                    Console.WriteLine(d.BookId + " " + d.Title + " " + d.Number);
                     break;
                 case 9:
                     Console.WriteLine("Enter userName:");
