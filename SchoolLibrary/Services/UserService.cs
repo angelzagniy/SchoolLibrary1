@@ -63,7 +63,7 @@ public class UserService : IUserService
     /// <param name="bookId">ід книжки</param>
     public void UserTakeBookAway(string userName, int bookId) 
     {
-        var user = _libraryContext.Users.FirstOrDefault(s => s.UserName == userName);
+        var user = _libraryContext.Users.FirstOrDefault(s => s.UserName.ToLower() == userName);
         if (user != null)
         {
             var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
@@ -84,7 +84,7 @@ public class UserService : IUserService
     /// <param name="bookId"></param>
     public void TakeBookBack(string userName, int bookId) 
     {
-        var user = _libraryContext.UserBooks.FirstOrDefault(s => s.UserName == userName);
+        var user = _libraryContext.UserBooks.FirstOrDefault(s => s.UserName.ToLower() == userName);
         if (user != null)
         {
             var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
@@ -103,7 +103,7 @@ public class UserService : IUserService
     /// <param name="userName"></param>
     public void DeleteUser(string userName) 
     {
-        var userB = _libraryContext.UserBooks.FirstOrDefault(s => s.UserName == userName);
+        var userB = _libraryContext.UserBooks.FirstOrDefault(s => s.UserName.ToLower() == userName);
         if (userB != null)
         {
             var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == userB.BookId);
