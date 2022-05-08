@@ -88,6 +88,7 @@ public class BookService : IBookService
     {
         var book = FindBook(bookId);
         book.Number = number;
+        book.FirstNumberOfBooks = number;
         _libraryContext.SaveChanges();
         return book;
     }
