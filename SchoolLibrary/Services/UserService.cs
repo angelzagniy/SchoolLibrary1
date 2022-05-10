@@ -118,7 +118,13 @@ public class UserService : IUserService
         }
         else
         {
-            throw new Exception("User was not found!");
+            var user1 = _libraryContext.Users.FirstOrDefault(s => s.UserName.ToLower() == userName);
+            if(user1 != null) 
+                _libraryContext.Users.Remove(user1);
+            else
+                throw new Exception("User was not found!");
+
+            _libraryContext.SaveChanges();
         }
     }
 }
