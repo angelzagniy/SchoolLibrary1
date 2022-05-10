@@ -4,22 +4,17 @@ namespace SchoolLibrary.Services;
 
 public interface IBookService
 {
-    void AddAuthor(string name); //додати нового автора
+    void AddAuthor(string name); //add new author
 
-    void AddBook(string title, int authorId, int number); //додати нову книжку
+    void AddBook(string title, int authorId, int number); //add new book
 
-    void ShowAllBooks(); //показати всі книжки
+    List<(int BookId, string Title, int Number, string Name)> GetAllBooks(); //get all books
+    
+    Book ChangeNumberOfBooks(string title, int number); //change number of books
 
-    /// <summary>
-    /// Змінити кількість примірників
-    /// </summary>
-    /// <param name="bookId"></param>
-    /// <param name="number">Нова кількість примірників</param>
-    Book ChangeNumberOfBooks(int bookId, int number);
+    Book FindBook(string title); //find book by title 
 
-    Book FindBook(int bookId); //знайти книжку по ід
-
-    void DeleteBook(int bookId); //видалити книжку, якщо жоден примірник не взято
+    void DeleteBook(int bookId); //delete book if book wasn`t taken
 }
 
 public class BookService : IBookService
@@ -32,7 +27,7 @@ public class BookService : IBookService
     }
 
     /// <summary>
-    /// додати нового автора
+    /// add new author
     /// </summary>
     /// <param name="name"></param>
     public void AddAuthor(string name) 
@@ -48,71 +43,72 @@ public class BookService : IBookService
     }
 
     /// <summary>
-    /// додати нову книжку
+    /// add new book
     /// </summary>
-    /// <param name="title">назва книжки</param>
+    /// <param name="title">book title</param>
     /// <param name="authorId"></param>
-    /// <param name="number">кількість книжок</param>
+    /// <param name="number">number of books</param>
     public void AddBook(string title, int authorId, int number) 
     {
         var add = _libraryContext.Books.FirstOrDefault(s => s.Title == title);
         if (add != null)
             throw new Exception("Book already exists!");
         var a = _libraryContext.Books.Add(new Book
-            {Title = title, AuthorId = authorId, Number = number, FirstNumberOfBooks = number});
+            {Title = title, AuthorId = authorId, Number = number});
         _libraryContext.SaveChanges();
         Console.WriteLine("Book id is " + a.Entity.BookId);
     }
     
-    public void ShowAllBooks() //показати всі книжки
+    /// <summary>
+    /// get all books
+    /// </summary>
+    /// <returns></returns>
+    public List<(int BookId, string Title, int Number, string Name)> GetAllBooks()
     {
         var books =
             from b in _libraryContext.Books
             join ab in _libraryContext.Authors on b.AuthorId equals ab.AuthorId
             select new {b.BookId, b.Title, b.Number, ab.Name};
 
-        var booksList = books.ToList();
-
-        foreach (var book in booksList)
-        {
-            Console.WriteLine(book.BookId + " " + book.Title + " " + book.Number + "---" + book.Name);
-        }
+        var booksList = books.ToList().Select(b => (b.BookId, b.Title, b.Number, b.Name)).ToList();
+        return booksList;
     }
 
     /// <summary>
-    /// Змінити кількість примірників
+    /// change number of books
     /// </summary>
-    /// <param name="bookId"></param>
-    /// <param name="number">Нова кількість примірників</param>
-    public Book ChangeNumberOfBooks(int bookId, int number)
+    /// <param name="title"></param>
+    /// <param name="number">new number of books</param>
+    public Book ChangeNumberOfBooks(string title, int number)
     {
-        var book = FindBook(bookId);
+        var book = FindBook(title);
         book.Number = number;
-        book.FirstNumberOfBooks = number;
         _libraryContext.SaveChanges();
         return book;
     }
 
     /// <summary>
-    /// знайти книжку по ід
+    /// find book by title
     /// </summary>
-    /// <param name="bookId"></param>
-    public Book FindBook(int bookId) 
+    /// <param name="title">book title</param>
+    public Book FindBook(string title) 
     {
-        var id = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
-        if (id == null)
+        var book = _libraryContext.Books.FirstOrDefault(s => s.Title.ToLower().Contains(title));
+        
+        if (book == null)
             throw new Exception("Book was not found!");
-        return id;
+        return book;
     }
     
     /// <summary>
-    /// видалити книжку, якщо жоден примірник не взято
+    /// delete book if book wasn`t taken
     /// </summary>
     /// <param name="bookId"></param>
     public void DeleteBook(int bookId) 
     {
         var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
-        if (book == null || book.Number != book.FirstNumberOfBooks) return;
+        var b = _libraryContext.UserBooks.FirstOrDefault(s => s.BookId == bookId);
+        if (book == null || b!=null) return;
         _libraryContext.Books.Remove(book);
         _libraryContext.SaveChanges();
     }

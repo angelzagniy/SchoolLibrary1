@@ -4,17 +4,17 @@ namespace SchoolLibrary.Services;
 
 public interface IUserService
 {
-    void AddUser(string name); //додати користувача
+    void AddUser(string name); //add user
 
-    List<User> ShowAllUsers(); //показати всіх користувачів
+    List<User> GetAllUsers(); //get all users
 
-    List<User> FindUser(string userName); //знайти користувача по імені
+    List<User> FindUser(string userName); //find user by name
 
-    void UserTakeBookAway(string userName, int bookId); //користувач забирає книжку додому
+    void UserTakeBookAway(string userName, int bookId); //people take book away
 
-    void TakeBookBack(string userName, int bookId); //користувач повертає книжку 
+    void TakeBookBack(string userName, int bookId); //people give book away 
 
-    void DeleteUser(string userName); //видалити користувача та повернути всі примірники 
+    void DeleteUser(string userName); //delete user 
 }
 
 public class UserService : IUserService
@@ -27,7 +27,7 @@ public class UserService : IUserService
     }
     
     /// <summary>
-    /// додати користувача
+    /// add new user
     /// </summary>
     /// <param name="name"></param>
     public void AddUser(string name) 
@@ -40,14 +40,18 @@ public class UserService : IUserService
         Console.WriteLine("User id is " + a.Entity.Id);
     }
     
-    public List<User> ShowAllUsers() //показати всіх користувачів
+    /// <summary>
+    /// get all users
+    /// </summary>
+    /// <returns></returns>
+    public List<User> GetAllUsers() 
     {
         List<User> userList = _libraryContext.Users.ToList();
         return userList;
     }
     
     /// <summary>
-    /// знайти користувача по імені
+    /// find user by name
     /// </summary>
     /// <param name="userName"></param>
     public List<User> FindUser(string userName)
@@ -57,10 +61,10 @@ public class UserService : IUserService
     }
     
     /// <summary>
-    /// користувач забирає книжку додому
+    /// people take book away
     /// </summary>
-    /// <param name="userName">ім'я користувача</param>
-    /// <param name="bookId">ід книжки</param>
+    /// <param name="userName">user name</param>
+    /// <param name="bookId">book id</param>
     public void UserTakeBookAway(string userName, int bookId) 
     {
         var user = _libraryContext.Users.FirstOrDefault(s => s.UserName.ToLower() == userName);
@@ -78,9 +82,9 @@ public class UserService : IUserService
     }
     
     /// <summary>
-    /// користувач повертає книжку 
+    /// people give book away 
     /// </summary>
-    /// <param name="userName"></param>
+    /// <param name="userName">user name</param>
     /// <param name="bookId"></param>
     public void TakeBookBack(string userName, int bookId) 
     {
@@ -98,7 +102,7 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// видалити користувача та повернути всі примірники
+    /// delete user
     /// </summary>
     /// <param name="userName"></param>
     public void DeleteUser(string userName) 
