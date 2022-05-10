@@ -61,6 +61,8 @@ public class Controller
                     Console.WriteLine("Invalid input! Please try again.");
                     break;
             }
+            Console.ReadKey();
+            Console.Clear();
         }
 
         Console.WriteLine("Please type 22 to show commands");
@@ -80,6 +82,7 @@ public class Controller
                                       "\n4 - change number of books" +
                                       "\n5 - show all users" +
                                       "\n6 - show all books" +
+                                      "\n13 - show all users who took books"+
                                       "\n7 - find username" +
                                       "\n8 - find book by title" +
                                       "\n9 - people take book away" +
@@ -130,6 +133,7 @@ public class Controller
                     break;
                 case 6:
                     var q = _bookService.GetAllBooks();
+                    
                     foreach (var bo in q)
                     {
                         Console.WriteLine(bo.BookId + " " + bo.Title + " " + bo.Number + " " + bo.Name);
@@ -148,8 +152,8 @@ public class Controller
 
                     break;
                 case 8:
-                    Console.WriteLine("Enter bookId for searching:");
-                    var bt = (Console.ReadLine());
+                    Console.WriteLine("Enter book`s title for searching:");
+                    var bt = Console.ReadLine().ToLower();
                     var d = _bookService.FindBook(bt);
                     Console.WriteLine(d.BookId + " " + d.Title + " " + d.Number);
                     break;
@@ -177,12 +181,21 @@ public class Controller
                     var u = Console.ReadLine().ToLower();
                     _userService.DeleteUser(u);
                     break;
+                case 13:
+                    var ub = _userService.GetAllUsersWithBooks();
+                    foreach (var user in ub)
+                    {
+                        Console.WriteLine(user.Id + " " + user.UserName + " " + user.BookId + " " + user.Title);
+                    }
+                    
+                    break;
                 default:
                     Console.WriteLine("Wrong number!");
                     break;
             }
 
-            Console.WriteLine("Enter next command (22 - show all commands)");
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }

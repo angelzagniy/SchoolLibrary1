@@ -8,6 +8,8 @@ public interface IUserService
 
     List<User> GetAllUsers(); //get all users
 
+    List<(int Id, string UserName, int BookId, string Title)> GetAllUsersWithBooks(); //get all users with books
+    
     List<User> FindUser(string userName); //find user by name
 
     void UserTakeBookAway(string userName, int bookId); //people take book away
@@ -71,7 +73,7 @@ public class UserService : IUserService
         if (user != null)
         {
             var book = _libraryContext.Books.FirstOrDefault(s => s.BookId == bookId);
-            if (book != null) book.Number--;
+            if (book != null && book.Number > 0) book.Number--;
             _libraryContext.UserBooks.Add(new UserBook {Id = user.Id, BookId = bookId, UserName = userName});
             _libraryContext.SaveChanges();
         }
@@ -101,6 +103,20 @@ public class UserService : IUserService
         }
     }
 
+    /// <summary>
+    /// get all users with books
+    /// </summary>
+    public List<(int Id, string UserName, int BookId, string Title)> GetAllUsersWithBooks()
+    {
+        var users =
+            from b in _libraryContext.UserBooks
+            join ab in _libraryContext.Books on b.BookId equals ab.BookId
+            select new {b.Id, b.UserName, b.BookId, ab.Title};
+
+        var booksList = users.ToList().Select(b => (b.Id, b.UserName, b.BookId, b.Title)).ToList();
+        return booksList;
+    }
+    
     /// <summary>
     /// delete user
     /// </summary>
