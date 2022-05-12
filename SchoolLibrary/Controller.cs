@@ -78,6 +78,7 @@ public class Controller
                                       "\n0 - quit" +
                                       "\n1 - add user" +
                                       "\n2 - add new author" +
+                                      "\n14 - show all authors"+
                                       "\n3 - add new book" +
                                       "\n4 - change number of books" +
                                       "\n5 - show all users" +
@@ -188,6 +189,14 @@ public class Controller
                         Console.WriteLine(user.Id + " " + user.UserName + " " + user.BookId + " " + user.Title);
                     }
                     
+                    break;
+                case 14:
+                    var authors = _bookService.GetAllAuthors();
+
+                    foreach (var author in authors)
+                    {
+                        Console.WriteLine("Id - " + author.AuthorId + " " + author.Name);
+                    }
                     break;
                 default:
                     Console.WriteLine("Wrong number!");

@@ -6,6 +6,8 @@ public interface IBookService
 {
     void AddAuthor(string name); //add new author
 
+    List<Author> GetAllAuthors(); //get all authors
+    
     void AddBook(string title, int authorId, int number); //add new book
 
     List<(int BookId, string Title, int Number, string Name)> GetAllBooks(); //get all books
@@ -42,6 +44,13 @@ public class BookService : IBookService
         Console.WriteLine("Author id is " + a.Entity.AuthorId);
     }
 
+    //get all authors
+    public List<Author> GetAllAuthors() 
+    {
+        List<Author> authorsList = _libraryContext.Authors.ToList();
+        return authorsList;
+    }
+    
     /// <summary>
     /// add new book
     /// </summary>
@@ -62,7 +71,6 @@ public class BookService : IBookService
     /// <summary>
     /// get all books
     /// </summary>
-    /// <returns></returns>
     public List<(int BookId, string Title, int Number, string Name)> GetAllBooks()
     {
         var books =
